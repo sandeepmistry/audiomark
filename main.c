@@ -22,6 +22,8 @@
 #include <time.h>
 #elif defined _WIN32
 #include <sys\timeb.h>
+#elif defined PICO_BOARD
+#include "pico/stdlib.h"
 #elif defined __arm__
 #include <RTE_Components.h>
 #if defined __PERF_COUNTER__
@@ -49,6 +51,8 @@ th_microseconds(void)
     struct timeb t;
     ftime(&t);
     usec = ((uint64_t)t.time) * 1000 * 1000 + ((uint64_t)t.millitm) * 1000;
+#elif defined PICO_BOARD
+    usec = get_absolute_time();
 #elif defined __arm__ && defined __PERF_COUNTER__
     usec = (uint64_t)get_system_us();
 #else
@@ -84,6 +88,10 @@ main(void)
     bool     err        = false;
     uint32_t iterations = 1;
     uint64_t dt         = 0;
+
+#if defined PICO_BOARD
+    stdio_init_all();
+#endif
 
     printf("Initializing\n");
 

@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.10.2)
-project(audiomark
-	DESCRIPTION "Firmware for the AudoMark Self-Hosted Benchmark"
-	LANGUAGES C
-	VERSION 1.0.0)
 
-set(CMAKE_C_FLAGS "-O2")
+include(pico_sdk_import.cmake)
+
+project(audiomark C CXX)
+
+pico_sdk_init()
+
+# set(CMAKE_C_FLAGS "-O2")
 
 include_directories(lib/speexdsp)
 include_directories(lib/speexdsp/include)
@@ -137,12 +139,28 @@ add_executable(audiomark ${EE_SOURCE} ${TH_SOURCE})
 
 if(CMAKE_C_COMPILER_ID MATCHES "MSVC")
 else()
-	target_link_libraries(audiomark m)
-	target_link_libraries(test_abf_f32 m)
-	target_link_libraries(test_aec_f32 m)
-	target_link_libraries(test_anr_f32 m)
-	target_link_libraries(test_mfcc_f32 m)
-	target_link_libraries(test_kws m)
+	if(CMAKE_SYSTEM_PROCESSOR MATCHES "cortex*")
+		target_link_libraries(audiomark pico_stdlib cmsis_core_headers)
+		target_link_libraries(test_abf_f32 pico_stdlib cmsis_core_headers)
+		target_link_libraries(test_aec_f32 pico_stdlib cmsis_core_headers)
+		target_link_libraries(test_anr_f32 pico_stdlib cmsis_core_headers)
+		target_link_libraries(test_mfcc_f32 pico_stdlib cmsis_core_headers)
+		target_link_libraries(test_kws pico_stdlib cmsis_core_headers)
+	endif()
+
+	target_link_libraries(audiomark pico_stdlib m)
+	target_link_libraries(test_abf_f32 pico_stdlib m)
+	target_link_libraries(test_aec_f32 pico_stdlib m)
+	target_link_libraries(test_anr_f32 pico_stdlib m)
+	target_link_libraries(test_mfcc_f32 pico_stdlib m)
+	target_link_libraries(test_kws pico_stdlib m)
+
+	pico_add_extra_outputs(audiomark)
+	pico_add_extra_outputs(test_abf_f32)
+	pico_add_extra_outputs(test_aec_f32)
+	pico_add_extra_outputs(test_anr_f32)
+	pico_add_extra_outputs(test_mfcc_f32)
+	pico_add_extra_outputs(test_kws)
 endif()
 
 add_custom_target(test

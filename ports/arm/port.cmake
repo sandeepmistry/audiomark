@@ -10,7 +10,11 @@ add_definitions(-DUSE_CMSIS_DSP)
 # This is to make sure we include function decor for GCC/CLANG in CMSIS
 # This might screw up arm-*-gcc toolchains though? If you see issues in
 # arm_math_types.h it is probably related to this.
-add_definitions(-D__GNUC_PYTHON__)
+# Comment next line for Cortex-M targets
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "cortex*")
+else()
+    add_definitions(-D__GNUC_PYTHON__)
+endif()
 
 set(PORT_SOURCE
     ${PORT_DIR}/th_api.c
