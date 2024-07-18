@@ -29,6 +29,8 @@ add_definitions(-DOVERRIDE_SPEEX_ALLOC)
 add_definitions(-DOS_SUPPORT_CUSTOM)
 add_definitions(-D__RESTRICT=)
 
+add_definitions(-DPICO_STACK_SIZE=0x1000)
+
 set(EE_SOURCE
 	# Note: main.c is just for self-hosted testing
 	main.c
